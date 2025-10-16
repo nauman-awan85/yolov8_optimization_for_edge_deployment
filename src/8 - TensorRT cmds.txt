@@ -1,0 +1,40 @@
+
+
+
+TensorRT code for FP16 Engine:
+trtexec --onnx=/home/nauman/new_thesis/models/ distilled_static.onnx --saveEngine=/home/nauman/new_thesis/models/fp16_latest.engine --fp16 --noTF32 --workspace=2048 --sparsity=enable --dumpLayerInfo --exportLayerInfo=/home/nauman/new_thesis/models/fp16_layerinfo.json --exportProfile=/home/nauman/new_thesis/models/fp16_profile.json --profilingVerbosity=detailed --verbose | tee /home/nauman/new_thesis/models/fp16_build.log
+
+
+
+
+TensorRT code For Calib Cache:
+
+cd /home/nauman/new_thesis && python3 cache_new.py --onnx models/distilled_static.onnx --calib_dir data/calib --cache models/calib_latest.cache --img_size 512 --batch 1
+
+
+
+
+TensorRT code For INT8 Engine:
+trtexec --onnx=/home/nauman/new_thesis/models/ distilled_static.onnx --saveEngine=/home/nauman/new_thesis/models/int8_latest.engine --int8 --fp16=0 --noTF32 --workspace=2048 --sparsity=enable --calib=/home/nauman/new_thesis/models/calib_latest.cache --dumpLayerInfo --exportLayerInfo=/home/nauman/new_thesis/models/int8_layerinfo.json --exportProfile=/home/nauman/new_thesis/models/int8_profile.json --profilingVerbosity=detailed --verbose | tee /home/nauman/new_thesis/models/int8_build.log
+
+
+
+
+Performance test
+
+
+trtexec --loadEngine=/home/nauman/new_thesis/models/int8_latest.engine --batch=1 --streams=1 --duration=60
+
+
+trtexec --loadEngine=/home/nauman/new_thesis/models/fp16_latest.engine --batch=1 --streams=1 --duration=60
+
+
+
+
+
+
+
+
+
+
+
